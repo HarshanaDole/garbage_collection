@@ -21,7 +21,7 @@ if (!isset($user_id)) {
         #map-container {
             display: flex;
             flex-direction: row;
-            height: 100vh;
+            height: 90vh;
         }
 
         #incidents-container {
@@ -29,12 +29,14 @@ if (!isset($user_id)) {
             background-color: #f1f1f1;
             padding: 10px;
             box-sizing: border-box;
+            height: calc(100vh - 70px);
             overflow-y: auto;
         }
 
         #map {
-            flex: 1;
+            width: 70%;
             height: 100%;
+            /* update this property */
         }
 
         #incidents {

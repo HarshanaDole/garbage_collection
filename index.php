@@ -2,6 +2,13 @@
 
 include 'components/dbconfig.php';
 
+session_start();
+
+$captain_id = $_SESSION['captain_id'];
+
+if (!isset($captain_id)) {
+    header('location:captain_login.php');
+}
 
 ?>
 
@@ -14,7 +21,7 @@ include 'components/dbconfig.php';
         #map-container {
             display: flex;
             flex-direction: row;
-            height: 100vh;
+            height: 90vh;
         }
 
         #incidents-container {
@@ -22,12 +29,14 @@ include 'components/dbconfig.php';
             background-color: #f1f1f1;
             padding: 10px;
             box-sizing: border-box;
+            height: calc(100vh - 70px);
             overflow-y: auto;
         }
 
         #map {
-            flex: 1;
+            width: 70%;
             height: 100%;
+            /* update this property */
         }
 
         #incidents {
@@ -45,6 +54,55 @@ include 'components/dbconfig.php';
 
         #incidents li:hover {
             background-color: #ddd;
+        }
+
+        /* The Modal (background) */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            padding-top: 100px;
+            /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
@@ -77,7 +135,7 @@ include 'components/dbconfig.php';
                 $description = $row['description'];
                 $image_path = $row['image_path'];
             ?>
-                // Create a marker for this incident
+                // craete a marker for this incident
                 var marker = new google.maps.Marker({
                     position: {
                         lat: <?php echo $latitude; ?>,
@@ -87,10 +145,11 @@ include 'components/dbconfig.php';
                     title: '<?php echo $name; ?>'
                 });
 
-                // Create an info window for this incident
+                //info window for marker
                 var infowindow = new google.maps.InfoWindow({
-                    content: '<div><p><?php echo $name; ?></p><img src="<?php echo 'GTF/' .$image_path; ?>" width="200"></div>'
+                    content: '<div><p><?php echo $name; ?></p><img src="<?php echo 'GTF/' . $image_path; ?>" width="200"></div>'
                 });
+
 
                 // Add a click event listener to the marker
                 marker.addListener('click', (function(marker, infowindow) {
@@ -140,12 +199,25 @@ include 'components/dbconfig.php';
 </head>
 
 <body onload="initMap()">
+    <?php include 'components/captain_header.php'; ?>
     <div id="map-container">
         <div id="incidents-container">
             <h2 style="font-size:large;">Reported Incidents</h2>
             <ul id="incidents"></ul>
         </div>
         <div id="map"></div>
+        <!-- Modal -->
+        <div id="detailsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h1 id="modalName"></h1>
+                <p id="modalLat"></p>
+                <p id="modalLng"></p>
+                <p id="modalDesc"></p>
+                <img id="modalImg" src="" width="200">
+            </div>
+        </div>
+
     </div>
 
     <script src="js/gtf.js"></script>

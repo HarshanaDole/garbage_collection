@@ -38,7 +38,7 @@ if (isset($_GET['delete'])) {
 </head>
 
 <body>
-<?php include '../components/gtf_header.php'; ?>
+    <?php include '../components/gtf_header.php'; ?>
     <section class="show-incidents">
 
         <h1 class="heading">reported incidents</h1>
